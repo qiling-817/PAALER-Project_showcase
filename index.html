@@ -2,12 +2,10 @@
 <li><strong>图片名称编辑：</strong>选择图片后，可以在下方的文本框中编辑每张图片的显示名称</li>
 <li><strong>水印设置：</strong>可以调整水印大小模式、位置、透明度等</li>
 <li><strong>生成导出：</strong>点击"生成预览"查看效果，满意后点击"导出为图片"（自动压缩至10MB以内）</li>
-</ul>
-</div>
+
 
 <!-- 文件选择控制区域 -->
 <div class="file-controls">
-
 <!-- 一、项目文案内容 -->
 <div class="manual-input-section">
 <h4>📝 一、项目文案内容</h4>
@@ -50,7 +48,6 @@
 </div>
 </div>
 </div>
-
 <!-- 4、或者选择txt文件 -->
 <div class="txt-file-section">
 <h4>4、或者选择txt文件自动填充上面的内容</h4>
@@ -60,7 +57,6 @@
 </div>
 </div>
 </div>
-
 <!-- 二、选择Logo图片 -->
 <div class="font-size-controls">
 <h4>📷 二、选择Logo图片（智能调整尺寸）</h4>
@@ -68,7 +64,6 @@
 <input accept="image/*" id="logoFiles" multiple="" type="file"/>
 </div>
 </div>
-
 <!-- 三、项目图片设置 -->
 <div class="font-size-controls">
 <h4>🖼️ 三、项目图片设置</h4>
@@ -85,12 +80,10 @@
 <span>px</span>
 </div>
 </div>
-
 <!-- 动态生成的图片选择区域 -->
 <div id="dynamicImageInputs">
 <!-- 这里会动态生成图片选择框 -->
 </div>
-
 <!-- 四、水印控制区域 -->
 <div class="watermark-controls">
 <h4>🏷️ 四、水印设置</h4>
@@ -126,30 +119,27 @@
 </div>
 </div>
 </div>
-
 <div class="button-group">
 <button class="refresh-btn" onclick="loadContent()">🔄 生成预览</button>
 <div class="export-options">
 <label for="exportQuality">导出质量：</label>
 <select id="exportQuality">
 <option value="3">低质量（3MB以内）</option>
-<option value="5" selected>中质量（5MB以内）</option>
+<option selected="" value="5">中质量（5MB以内）</option>
 <option value="10">高质量（10MB以内）</option>
 <option value="20">超高质量（20MB以内）</option>
 <option value="custom">自定义大小</option>
 </select>
-<input type="number" id="customSize" min="1" max="50" value="8" style="width: 80px; margin-left: 10px; display: none;" placeholder="MB">
+<input id="customSize" max="50" min="1" placeholder="MB" style="width: 80px; margin-left: 10px; display: none;" type="number" value="8"/>
 <span id="customLabel" style="display: none; margin-left: 5px;">MB</span>
 </div>
 <button class="export-btn" disabled="" id="exportBtn" onclick="exportAsImage()">💾 导出为图片</button>
 </div>
 <div class="export-status" id="exportStatus" style="display: none;"></div>
 </div>
-
 <!-- 主要内容区域 -->
 <div id="main-content">
 <div class="loading">请填写文案内容，选择图片文件，然后点击"生成预览"按钮</div>
-</div>
 </div>
 
 <!-- 引入html2canvas库 -->
@@ -1031,8 +1021,9 @@
             });
         });
     </script>
-</body>
-</html><!DOCTYPE html>
+
+<!DOCTYPE html>
+
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8"/>
@@ -1889,6 +1880,52 @@
             }
         }
 
+
+@media (max-width: 768px) {
+    .main-title {
+        font-size: 26px;
+        line-height: 1.4;
+        text-align: center;
+        padding: 0 10px;
+    }
+
+    .subtitle {
+        font-size: 16px;
+        line-height: 1.6;
+        text-align: center;
+        padding: 0 10px;
+    }
+
+    .company-intro p {
+        font-size: 14px;
+        text-indent: 1.5em;
+        padding: 0 10px;
+    }
+
+    .project-section {
+        margin-bottom: 40px;
+    }
+
+    .image-container {
+        margin: 20px 0;
+    }
+
+    .image-caption {
+        font-size: 14px;
+        padding: 8px 10px;
+    }
+
+    .project-image {
+        width: 100%;
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px;
+    }
+
+    .container {
+        padding: 16px;
+    }
+}
 </style>
 </head>
 <body>
@@ -1901,4 +1938,4 @@
 <li><strong>文案输入：</strong>优先使用手动输入，也可以选择txt文件自动填充。标题和副标题支持换行显示</li>
 <li><strong>字体设置：</strong>每个输入框右侧都有对应的字体大小设置</li>
 <li><strong>图片板块设置：</strong>输入需要的板块数量后，点击"更新图片选择框"生成对应数量的选择框</li>
-<li><strong>图片多选功能：</strong>每个"项目图片 X"都支持多选，选
+<li><strong>图片多选功能：</strong>每个"项目图片 X"都支持多选，选</li></ul></div></div></body></html>
