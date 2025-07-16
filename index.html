@@ -1,3 +1,9 @@
+<li><strong>图片多选功能：</strong>每个"项目图片 X"都支持多选，选中的图片会组成一个图片组显示</li>
+<li><strong>图片名称编辑：</strong>选择图片后，可以在下方的文本框中编辑每张图片的显示名称</li>
+<li><strong>水印设置：</strong>可以调整水印大小模式、位置、透明度等</li>
+<li><strong>生成导出：</strong>点击"生成预览"查看效果，满意后点击"导出为图片"（自动压缩至10MB以内）</li>
+</ul>
+</div>
 
 <!-- 文件选择控制区域 -->
 <div class="file-controls">
@@ -860,7 +866,7 @@
             watermarkImg.src = watermark.src;
         }
 
-        // 导出为图片（带可调节压缩）
+        // 导出为图片（带可调节压缩，固定1080px宽度）
         async function exportAsImage() {
             const exportBtn = document.getElementById('exportBtn');
             const exportStatus = document.getElementById('exportStatus');
@@ -885,23 +891,41 @@
             exportStatus.textContent = `正在生成图片（目标大小：${maxSizeMB}MB以内）...`;
 
             try {
+                // 固定宽度为1080px，高度按比例计算
+                const fixedWidth = 1080;
+                const contentAspectRatio = mainContent.scrollHeight / mainContent.scrollWidth;
+                const fixedHeight = Math.round(fixedWidth * contentAspectRatio);
+                
                 const options = {
-                    scale: 2,
+                    scale: 1, // 使用scale 1，通过width和height控制尺寸
                     useCORS: true,
                     allowTaint: false,
                     backgroundColor: '#ffffff',
-                    width: mainContent.scrollWidth,
-                    height: mainContent.scrollHeight,
+                    width: fixedWidth,
+                    height: fixedHeight,
                     scrollX: 0,
                     scrollY: 0
                 };
 
                 const canvas = await html2canvas(mainContent, options);
-                const compressedDataUrl = compressImage(canvas, maxSize);
+                
+                // 如果生成的canvas宽度不是1080，进行调整
+                let finalCanvas = canvas;
+                if (canvas.width !== fixedWidth) {
+                    const tempCanvas = document.createElement('canvas');
+                    const tempCtx = tempCanvas.getContext('2d');
+                    tempCanvas.width = fixedWidth;
+                    tempCanvas.height = fixedHeight;
+                    
+                    // 将原canvas内容绘制到固定尺寸的canvas上
+                    tempCtx.drawImage(canvas, 0, 0, fixedWidth, fixedHeight);
+                    finalCanvas = tempCanvas;
+                }
+                
+                const compressedDataUrl = compressImage(finalCanvas, maxSize);
                 
                 // 获取项目标题作为文件名
                 const projectTitle = projectData.title || '项目展示';
-                // 清理文件名，移除特殊字符
                 const cleanTitle = projectTitle.replace(/[<>:"/\\|?*\n\r]/g, '').trim();
                 const qualityLabel = qualitySelect.options[qualitySelect.selectedIndex].text.split('（')[0];
                 
@@ -917,7 +941,7 @@
                 const fileSizeMB = (fileSizeKB / 1024).toFixed(2);
                 
                 exportStatus.className = 'export-status success';
-                exportStatus.textContent = `图片导出成功！实际文件大小: ${fileSizeMB}MB`;
+                exportStatus.textContent = `图片导出成功！尺寸: ${fixedWidth}x${fixedHeight}px，文件大小: ${fileSizeMB}MB`;
                 
                 setTimeout(() => {
                     exportStatus.style.display = 'none';
@@ -1734,10 +1758,120 @@
             padding: 2px;
         }
 
-        .drag-handle:hover {
-            color: #666;
+        /* 移动端优化 */
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .file-input-group input[type="file"],
+            .file-input-group input[type="text"], 
+            .file-input-group textarea,
+            .file-input-group input[type="number"] {
+                padding: 15px;
+                font-size: 16px;
+                min-height: 44px;
+            }
+            
+            .refresh-btn, .export-btn {
+                padding: 16px 24px;
+                font-size: 16px;
+                min-height: 48px;
+                width: 100%;
+                margin: 5px 0;
+            }
+            
+            .button-group {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .export-options {
+                width: 100%;
+                justify-content: center;
+                padding: 15px;
+            }
+            
+            .export-options select {
+                padding: 12px;
+                font-size: 16px;
+                min-height: 44px;
+                flex: 1;
+            }
+            
+            .export-options input[type="number"] {
+                padding: 12px;
+                font-size: 16px;
+                min-height: 44px;
+                width: 100px;
+            }
+            
+            .auto-fill-btn {
+                padding: 12px 20px;
+                font-size: 16px;
+                min-height: 44px;
+                width: 100%;
+                margin: 10px 0;
+            }
+            
+            .watermark-control-row {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .control-group {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .control-group select,
+            .control-group input {
+                padding: 12px;
+                font-size: 16px;
+                min-height: 44px;
+            }
+            
+            .font-size-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+            
+            .font-size-item input[type="number"] {
+                width: 100%;
+                padding: 12px;
+                font-size: 16px;
+                min-height: 44px;
+            }
+            
+            .input-with-font-size {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .font-size-control {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .font-size-control input[type="number"] {
+                width: 80px;
+                padding: 12px;
+                font-size: 16px;
+                min-height: 44px;
+            }
         }
 
 </style>
 </head>
 <body>
+<div class="container">
+<!-- 使用说明 -->
+<div class="instructions">
+<h3>使用说明</h3>
+<ul>
+<li><strong>推荐操作顺序：</strong>按一、二、三、四的顺序依次完成设置</li>
+<li><strong>文案输入：</strong>优先使用手动输入，也可以选择txt文件自动填充。标题和副标题支持换行显示</li>
+<li><strong>字体设置：</strong>每个输入框右侧都有对应的字体大小设置</li>
+<li><strong>图片板块设置：</strong>输入需要的板块数量后，点击"更新图片选择框"生成对应数量的选择框</li>
+<li><strong>图片多选功能：</strong>每个"项目图片 X"都支持多选，选
