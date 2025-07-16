@@ -866,11 +866,14 @@
             watermarkImg.src = watermark.src;
         }
 
-        // 导出为图片（固定1080px宽度，不受设备影响）
+        // 导出为图片（固定1080px宽度，移动端字体放大）
         async function exportAsImage() {
             const exportBtn = document.getElementById('exportBtn');
             const exportStatus = document.getElementById('exportStatus');
             const mainContent = document.getElementById('main-content');
+            
+            // 检测是否为移动端
+            const isMobile = window.innerWidth <= 768;
             
             // 获取用户选择的压缩大小
             const qualitySelect = document.getElementById('exportQuality');
@@ -903,6 +906,35 @@
                 mainContent.style.transform = 'scale(1)';
                 document.body.style.overflow = 'visible';
                 
+                // 如果是移动端，临时调整字体大小为2倍
+                let originalFontSizes = {};
+                if (isMobile) {
+                    const titleElements = mainContent.querySelectorAll('.main-title');
+                    const subtitleElements = mainContent.querySelectorAll('.subtitle');
+                    const introElements = mainContent.querySelectorAll('.company-intro p');
+                    const captionElements = mainContent.querySelectorAll('.image-caption');
+                    
+                    titleElements.forEach(el => {
+                        originalFontSizes.title = el.style.fontSize || getComputedStyle(el).fontSize;
+                        el.style.fontSize = '40px'; // 20px * 2
+                    });
+                    
+                    subtitleElements.forEach(el => {
+                        originalFontSizes.subtitle = el.style.fontSize || getComputedStyle(el).fontSize;
+                        el.style.fontSize = '30px'; // 15px * 2
+                    });
+                    
+                    introElements.forEach(el => {
+                        originalFontSizes.intro = el.style.fontSize || getComputedStyle(el).fontSize;
+                        el.style.fontSize = '20px'; // 10px * 2
+                    });
+                    
+                    captionElements.forEach(el => {
+                        originalFontSizes.caption = el.style.fontSize || getComputedStyle(el).fontSize;
+                        el.style.fontSize = '20px'; // 10px * 2
+                    });
+                }
+                
                 // 等待一下让DOM更新
                 await new Promise(resolve => setTimeout(resolve, 100));
                 
@@ -930,6 +962,30 @@
                 mainContent.style.transform = originalTransform;
                 document.body.style.overflow = originalOverflow;
                 
+                // 如果是移动端，恢复原始字体大小
+                if (isMobile) {
+                    const titleElements = mainContent.querySelectorAll('.main-title');
+                    const subtitleElements = mainContent.querySelectorAll('.subtitle');
+                    const introElements = mainContent.querySelectorAll('.company-intro p');
+                    const captionElements = mainContent.querySelectorAll('.image-caption');
+                    
+                    titleElements.forEach(el => {
+                        el.style.fontSize = originalFontSizes.title || '';
+                    });
+                    
+                    subtitleElements.forEach(el => {
+                        el.style.fontSize = originalFontSizes.subtitle || '';
+                    });
+                    
+                    introElements.forEach(el => {
+                        el.style.fontSize = originalFontSizes.intro || '';
+                    });
+                    
+                    captionElements.forEach(el => {
+                        el.style.fontSize = originalFontSizes.caption || '';
+                    });
+                }
+                
                 // 确保canvas是1080px宽度
                 let finalCanvas = canvas;
                 if (canvas.width !== 1080) {
@@ -949,9 +1005,10 @@
                 const projectTitle = projectData.title || '项目展示';
                 const cleanTitle = projectTitle.replace(/[<>:"/\\|?*\n\r]/g, '').trim();
                 const qualityLabel = qualitySelect.options[qualitySelect.selectedIndex].text.split('（')[0];
+                const deviceLabel = isMobile ? '_移动端' : '';
                 
                 const link = document.createElement('a');
-                link.download = `${cleanTitle}_${qualityLabel}.jpg`;
+                link.download = `${cleanTitle}_${qualityLabel}${deviceLabel}.jpg`;
                 link.href = compressedDataUrl;
                 
                 document.body.appendChild(link);
@@ -962,7 +1019,7 @@
                 const fileSizeMB = (fileSizeKB / 1024).toFixed(2);
                 
                 exportStatus.className = 'export-status success';
-                exportStatus.textContent = `图片导出成功！尺寸: ${finalCanvas.width}x${finalCanvas.height}px，文件大小: ${fileSizeMB}MB`;
+                exportStatus.textContent = `图片导出成功！尺寸: ${finalCanvas.width}x${finalCanvas.height}px，文件大小: ${fileSizeMB}MB${isMobile ? '（移动端字体已放大）' : ''}`;
                 
                 setTimeout(() => {
                     exportStatus.style.display = 'none';
@@ -1790,6 +1847,36 @@
         @media (max-width: 768px) {
             .container {
                 padding: 10px;
+            }
+            
+            /* 移动端字体放大2倍 */
+            .main-title {
+                font-size: 40px !important; /* PC端20px的2倍 */
+            }
+            
+            .subtitle {
+                font-size: 30px !important; /* PC端15px的2倍 */
+            }
+            
+            .company-intro p {
+                font-size: 20px !important; /* PC端10px的2倍 */
+            }
+            
+            .image-caption {
+                font-size: 20px !important; /* PC端10px的2倍 */
+            }
+            
+            /* 占位符字体也需要调整 */
+            .placeholder-content {
+                font-size: 36px !important; /* 适当放大 */
+            }
+            
+            .placeholder-icon {
+                font-size: 80px !important;
+            }
+            
+            .placeholder-subtitle {
+                font-size: 28px !important;
             }
             
             .file-input-group input[type="file"],
