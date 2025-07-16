@@ -19,7 +19,7 @@
 </div>
 <div class="font-size-control">
 <label>字体:</label>
-<input id="titleFontSize" max="120" min="10" type="number" value="20"/>
+<input id="titleFontSize" max="120" min="10" type="number" value="50"/>
 <span>px</span>
 </div>
 </div>
@@ -32,7 +32,7 @@
 </div>
 <div class="font-size-control">
 <label>字体:</label>
-<input id="subtitleFontSize" max="80" min="10" type="number" value="15"/>
+<input id="subtitleFontSize" max="80" min="10" type="number" value="40"/>
 <span>px</span>
 </div>
 </div>
@@ -45,7 +45,7 @@
 </div>
 <div class="font-size-control">
 <label>字体:</label>
-<input id="introFontSize" max="70" min="8" type="number" value="10"/>
+<input id="introFontSize" max="70" min="8" type="number" value="25"/>
 <span>px</span>
 </div>
 </div>
@@ -81,7 +81,7 @@
 <!-- 图片说明字体大小设置 -->
 <div class="font-size-item" style="margin-top: 15px;">
 <label>图片说明字体：</label>
-<input id="captionFontSize" max="60" min="8" type="number" value="10"/>
+<input id="captionFontSize" max="60" min="8" type="number" value="25"/>
 <span>px</span>
 </div>
 </div>
@@ -168,10 +168,10 @@
             watermarkPosition: 'center',
             imageBlockCount: 1,
             fontSizes: {
-                title: 20,
-                subtitle: 15,
-                intro: 10,
-                caption: 10
+                title: 50,
+                subtitle: 40,
+                intro: 25,
+                caption: 25
             },
             imageNames: [],
             imageFiles: []
@@ -1836,34 +1836,19 @@
                 padding: 10px;
             }
             
-            /* 移动端字体放大2倍 */
-            .main-title {
-                font-size: 40px !important; /* PC端20px的2倍 */
-            }
+            /* 移动端和PC端使用相同的字体大小，不再覆盖 */
             
-            .subtitle {
-                font-size: 30px !important; /* PC端15px的2倍 */
-            }
-            
-            .company-intro p {
-                font-size: 20px !important; /* PC端10px的2倍 */
-            }
-            
-            .image-caption {
-                font-size: 20px !important; /* PC端10px的2倍 */
-            }
-            
-            /* 占位符字体也需要调整 */
+            /* 占位符字体保持适当大小 */
             .placeholder-content {
-                font-size: 36px !important; /* 适当放大 */
+                font-size: 32px !important;
             }
             
             .placeholder-icon {
-                font-size: 80px !important;
+                font-size: 64px !important;
             }
             
             .placeholder-subtitle {
-                font-size: 28px !important;
+                font-size: 24px !important;
             }
             
             .file-input-group input[type="file"],
