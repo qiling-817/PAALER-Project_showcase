@@ -1217,11 +1217,7 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.08); /* 添加轻微阴影 */
         }
 
-        /* 图片占位符样式优化 */
-        .image-placeholder {
-            margin: 40px 0;
-        }
-
+        /* 图片占位符中的字体也需要调整 */
         .placeholder-content {
             width: 100%; 
             max-width: 1600px; 
@@ -1233,10 +1229,22 @@
             align-items: center; 
             justify-content: center; 
             color: #999;
-            font-size: 18px;
+            font-size: 28px; /* 从18px调整为适中大小 */
             margin-bottom: 0; /* 与实际图片保持一致 */
             transition: all 0.3s ease;
             box-shadow: 0 12px 40px rgba(0,0,0,0.15), 0 6px 20px rgba(0,0,0,0.1); /* 增强阴影 */
+        }
+
+        .placeholder-icon {
+            font-size: 74px; /* 从64px调整 */
+            margin-bottom: 15px;
+            opacity: 0.6;
+        }
+
+        .placeholder-subtitle {
+            font-size: 24px; /* 从14px调整 */
+            margin-top: 8px;
+            opacity: 0.7;
         }
 
         .placeholder-content:hover {
@@ -1245,20 +1253,13 @@
             box-shadow: 0 16px 48px rgba(0,0,0,0.2), 0 8px 24px rgba(0,0,0,0.15); /* hover时更强阴影 */
         }
 
-        .placeholder-icon {
-            font-size: 64px; 
-            margin-bottom: 15px;
-            opacity: 0.6;
-        }
-
         .placeholder-text {
             text-align: center;
         }
 
-        .placeholder-subtitle {
-            font-size: 14px; 
-            margin-top: 8px;
-            opacity: 0.7;
+        /* 图片占位符样式优化 */
+        .image-placeholder {
+            margin: 40px 0;
         }
 
         /* 加载状态 */
