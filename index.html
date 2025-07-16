@@ -866,7 +866,7 @@
             watermarkImg.src = watermark.src;
         }
 
-        // 导出为图片（带可调节压缩，固定1080px宽度）
+        // 导出为图片（固定1080px宽度，不受设备影响）
         async function exportAsImage() {
             const exportBtn = document.getElementById('exportBtn');
             const exportStatus = document.getElementById('exportStatus');
@@ -891,34 +891,55 @@
             exportStatus.textContent = `正在生成图片（目标大小：${maxSizeMB}MB以内）...`;
 
             try {
-                // 固定宽度为1080px，高度按比例计算
-                const fixedWidth = 1080;
-                const contentAspectRatio = mainContent.scrollHeight / mainContent.scrollWidth;
-                const fixedHeight = Math.round(fixedWidth * contentAspectRatio);
+                // 临时设置容器为固定1080px宽度进行截图
+                const originalWidth = mainContent.style.width;
+                const originalMaxWidth = mainContent.style.maxWidth;
+                const originalTransform = mainContent.style.transform;
+                const originalOverflow = document.body.style.overflow;
+                
+                // 强制设置为1080px宽度
+                mainContent.style.width = '1080px';
+                mainContent.style.maxWidth = '1080px';
+                mainContent.style.transform = 'scale(1)';
+                document.body.style.overflow = 'visible';
+                
+                // 等待一下让DOM更新
+                await new Promise(resolve => setTimeout(resolve, 100));
+                
+                // 计算实际高度
+                const actualHeight = mainContent.scrollHeight;
                 
                 const options = {
-                    scale: 1, // 使用scale 1，通过width和height控制尺寸
+                    scale: 1,
                     useCORS: true,
                     allowTaint: false,
                     backgroundColor: '#ffffff',
-                    width: fixedWidth,
-                    height: fixedHeight,
+                    width: 1080,
+                    height: actualHeight,
                     scrollX: 0,
-                    scrollY: 0
+                    scrollY: 0,
+                    x: 0,
+                    y: 0
                 };
 
                 const canvas = await html2canvas(mainContent, options);
                 
-                // 如果生成的canvas宽度不是1080，进行调整
+                // 恢复原始样式
+                mainContent.style.width = originalWidth;
+                mainContent.style.maxWidth = originalMaxWidth;
+                mainContent.style.transform = originalTransform;
+                document.body.style.overflow = originalOverflow;
+                
+                // 确保canvas是1080px宽度
                 let finalCanvas = canvas;
-                if (canvas.width !== fixedWidth) {
+                if (canvas.width !== 1080) {
                     const tempCanvas = document.createElement('canvas');
                     const tempCtx = tempCanvas.getContext('2d');
-                    tempCanvas.width = fixedWidth;
-                    tempCanvas.height = fixedHeight;
+                    tempCanvas.width = 1080;
+                    tempCanvas.height = Math.round((canvas.height / canvas.width) * 1080);
                     
-                    // 将原canvas内容绘制到固定尺寸的canvas上
-                    tempCtx.drawImage(canvas, 0, 0, fixedWidth, fixedHeight);
+                    // 将原canvas内容按比例绘制到1080px宽度的canvas上
+                    tempCtx.drawImage(canvas, 0, 0, 1080, tempCanvas.height);
                     finalCanvas = tempCanvas;
                 }
                 
@@ -941,7 +962,7 @@
                 const fileSizeMB = (fileSizeKB / 1024).toFixed(2);
                 
                 exportStatus.className = 'export-status success';
-                exportStatus.textContent = `图片导出成功！尺寸: ${fixedWidth}x${fixedHeight}px，文件大小: ${fileSizeMB}MB`;
+                exportStatus.textContent = `图片导出成功！尺寸: ${finalCanvas.width}x${finalCanvas.height}px，文件大小: ${fileSizeMB}MB`;
                 
                 setTimeout(() => {
                     exportStatus.style.display = 'none';
@@ -951,6 +972,12 @@
                 console.error('导出图片时出错:', error);
                 exportStatus.className = 'export-status error';
                 exportStatus.textContent = '导出失败，请重试。';
+                
+                // 确保恢复样式
+                mainContent.style.width = '';
+                mainContent.style.maxWidth = '';
+                mainContent.style.transform = '';
+                document.body.style.overflow = '';
             } finally {
                 exportBtn.disabled = false;
             }
